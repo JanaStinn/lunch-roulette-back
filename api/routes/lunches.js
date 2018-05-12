@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
   Lunch.find()
+    .populate('creator')
     .exec()
     .then(doc => res.status(200).json(doc))
     .catch(err => res.status(500).json({error: err}))
@@ -13,8 +14,9 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const lunch = new Lunch({
     _id: new mongoose.Types.ObjectId,
-    name: req.body.name,
+    location: req.body.location,
     date: req.body.date,
+    creator: req.body.creator,
     participants: req.body.participants
   })
   lunch

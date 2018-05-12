@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const mongoose = require('mongoose');
+const upload = require('../config/multer');
 
 router.get('/', (req, res, next) => {
   User.find()
@@ -10,11 +11,12 @@ router.get('/', (req, res, next) => {
     .catch(err => res.status(500).json({error: err}))
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', upload.single('profilePic'), (req, res, next) => {
   const user = new User({
     _id: new mongoose.Types.ObjectId,
     name: req.body.name,
-    password: req.body.password
+    password: req.body.password,
+    profilePic: req.file.path 
   })
   user
     .save()
@@ -23,9 +25,6 @@ router.post('/', (req, res, next) => {
       createdUser: result
     }))
     .catch(err => res.status(500).json({error: err}))
-  res.status(201).json({
-    message: user
-  })
 })
 
 router.get('/:userID', (req, res, next) => {
